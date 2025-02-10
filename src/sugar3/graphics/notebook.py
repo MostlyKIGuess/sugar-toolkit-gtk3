@@ -86,7 +86,7 @@ class Notebook(Gtk.Notebook):
         icon_box.show()
 
     def _create_custom_tab(self, text, child):
-        event_box = Gtk.EventBox()
+        event_box = Gtk.Box()
 
         tab_box = Gtk.HBox(False, 2)
         tab_label = Gtk.Label(label=text)

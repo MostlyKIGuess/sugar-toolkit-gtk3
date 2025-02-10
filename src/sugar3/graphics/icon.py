@@ -759,7 +759,7 @@ class Icon(Gtk.Image):
     '''
 
 
-class EventIcon(Gtk.EventBox):
+class EventIcon(Gtk.Box):
     '''
     An Icon class that provides access to mouse events and that can act as a
     cursor-positioned palette invoker.
@@ -794,9 +794,7 @@ class EventIcon(Gtk.EventBox):
         self._buffer = _IconBuffer()
         self._alpha = 1.0
 
-        Gtk.EventBox.__init__(self)
-        self.set_visible_window(False)
-        self.set_above_child(True)
+        super().__init__(orientation=Gtk.Orientation.HORIZONTAL, **kwargs)
         self.add_events(Gdk.EventMask.BUTTON_PRESS_MASK |
                         Gdk.EventMask.TOUCH_MASK |
                         Gdk.EventMask.BUTTON_RELEASE_MASK)

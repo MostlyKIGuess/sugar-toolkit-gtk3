@@ -70,7 +70,7 @@ if not hasattr(GObject.ParamFlags, 'READWRITE'):
         GObject.ParamFlags.READABLE
 
 
-class Alert(Gtk.EventBox):
+class Alert(Gtk.Box):
     """
     Alerts are inside the activity window instead of being a
     separate popup window. They do not hide the canvas.
@@ -106,6 +106,7 @@ class Alert(Gtk.EventBox):
         self._msg = None
         self._icon = None
         self._buttons = {}
+        super().__init__(orientation=Gtk.Orientation.HORIZONTAL, **kwargs)
 
         self._hbox = Gtk.HBox()
         self._hbox.set_border_width(style.DEFAULT_SPACING)
@@ -130,7 +131,6 @@ class Alert(Gtk.EventBox):
 
         GObject.GObject.__init__(self, **kwargs)
 
-        self.set_visible_window(True)
         self.add(self._hbox)
         self._title_label.show()
         self._msg_label.show()

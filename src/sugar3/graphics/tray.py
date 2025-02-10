@@ -240,7 +240,7 @@ ALIGN_TO_START = 0
 ALIGN_TO_END = 1
 
 
-class HTray(Gtk.EventBox):
+class HTray(Gtk.Box):
 
     __gtype_name__ = 'SugarHTray'
 
@@ -255,8 +255,7 @@ class HTray(Gtk.EventBox):
         self._drag_active = False
         self.align = ALIGN_TO_START
 
-        Gtk.EventBox.__init__(self, **kwargs)
-
+        super().__init__(orientation=Gtk.Orientation.HORIZONTAL, **kwargs)
         self._box = Gtk.HBox()
         self.add(self._box)
         self._box.show()
@@ -336,7 +335,7 @@ if hasattr(HTray, 'set_css_name'):
     HTray.set_css_name('htray')
 
 
-class VTray(Gtk.EventBox):
+class VTray(Gtk.Box):
 
     __gtype_name__ = 'SugarVTray'
 
@@ -351,7 +350,7 @@ class VTray(Gtk.EventBox):
         self._drag_active = False
         self.align = ALIGN_TO_START
 
-        Gtk.EventBox.__init__(self, **kwargs)
+        super().__init__(self, **kwargs)
 
         self._box = Gtk.VBox()
         self.add(self._box)
@@ -438,12 +437,12 @@ class TrayButton(ToolButton):
         ToolButton.__init__(self, **kwargs)
 
 
-class _IconWidget(Gtk.EventBox):
+class _IconWidget(Gtk.Box):
 
     __gtype_name__ = 'SugarTrayIconWidget'
 
     def __init__(self, icon_name=None, xo_color=None):
-        Gtk.EventBox.__init__(self)
+        super().__init__(orientation=Gtk.Orientation.HORIZONTAL)
 
         self.set_app_paintable(True)
         self.add_events(Gdk.EventMask.BUTTON_PRESS_MASK |
@@ -465,7 +464,7 @@ class _IconWidget(Gtk.EventBox):
             cr.rectangle(0, 0, allocation.width, allocation.height)
             cr.paint()
 
-        Gtk.EventBox.do_draw(self, cr)
+        Gtk.Box.do_draw(self, cr)
 
         if palette and palette.is_up():
             invoker = palette.props.invoker

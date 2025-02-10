@@ -156,7 +156,7 @@ class ToolbarBox(Gtk.VBox):
         self._toolbar.connect('remove', self.__remove_cb)
 
         self._toolbar_widget, self._toolbar_alignment = \
-            _embed_page(Gtk.EventBox(), self._toolbar)
+            _embed_page(Gtk.Box(), self._toolbar)
         self.pack_start(self._toolbar_widget, True, True, 0)
 
         self.props.padding = padding
@@ -272,7 +272,7 @@ class _ToolbarPalette(PaletteWindow):
             self.popdown(immediate=True)
 
 
-class _Box(Gtk.EventBox):
+class _Box(Gtk.Box):
 
     def __init__(self, toolbar_button):
         GObject.GObject.__init__(self)

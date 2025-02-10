@@ -152,7 +152,7 @@ class PaletteMenuBox(Gtk.VBox):
         return vbox
 
 
-class PaletteMenuItemSeparator(Gtk.EventBox):
+class PaletteMenuItemSeparator(Gtk.Box):
     '''
     Horizontal seperator to put in a palette
     '''
@@ -160,14 +160,14 @@ class PaletteMenuItemSeparator(Gtk.EventBox):
     __gtype_name__ = 'SugarPaletteMenuItemSeparator'
 
     def __init__(self):
-        Gtk.EventBox.__init__(self)
+        super().__init__(orientation=Gtk.Orientation.HORIZONTAL)
         separator = Gtk.HSeparator()
         self.add(separator)
         separator.show()
         self.set_size_request(-1, style.DEFAULT_SPACING * 2)
 
 
-class PaletteMenuItem(Gtk.EventBox):
+class PaletteMenuItem(Gtk.Box):
     '''
     A palette menu item is a line of text, and optionally an icon, that the
     user can activate.
@@ -201,7 +201,7 @@ class PaletteMenuItem(Gtk.EventBox):
 
     def __init__(self, text_label=None, icon_name=None, text_maxlen=60,
                  xo_color=None, file_name=None, accelerator=None):
-        Gtk.EventBox.__init__(self)
+        super().__init__(orientation=Gtk.Orientation.HORIZONTAL)
         self.set_above_child(True)
 
         self.icon = None

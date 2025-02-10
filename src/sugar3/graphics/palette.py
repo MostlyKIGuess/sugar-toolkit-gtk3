@@ -123,7 +123,7 @@ class Palette(PaletteWindow):
         self._icon = None
         self._icon_visible = True
 
-        self._primary_event_box = Gtk.EventBox()
+        self._primary_event_box = Gtk.Box()
         self._primary_event_box.show()
         self._primary_box = Gtk.HBox()
         self._primary_event_box.add(self._primary_box)
@@ -329,7 +329,7 @@ class Palette(PaletteWindow):
             if self._icon:
                 self._icon_box.remove(self._icon_box.get_children()[0])
 
-            event_box = Gtk.EventBox()
+            event_box = Gtk.Box()
             event_box.connect('button-release-event',
                               self.__icon_button_release_event_cb)
             self._icon_box.pack_start(event_box, True, True, 0)
