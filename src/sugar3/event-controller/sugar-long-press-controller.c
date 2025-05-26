@@ -200,10 +200,13 @@ sugar_long_press_controller_handle_event (SugarEventController *controller,
   GdkEventSequence *sequence;
   gboolean handled = TRUE;
   GdkDevice *device;
+  GdkEventType event_type;
+  double x, y;
 
   priv = SUGAR_LONG_PRESS_CONTROLLER (controller)->priv;
   device = gdk_event_get_device (event);
   sequence = gdk_event_get_event_sequence (event);
+  event_type = gdk_event_get_event_type (event);
 
   if (priv->device)
     {
@@ -221,26 +224,34 @@ sugar_long_press_controller_handle_event (SugarEventController *controller,
         }
     }
 
-  switch (event->type)
+  switch (event_type)
     {
     case GDK_TOUCH_BEGIN:
       priv->device = g_object_ref (device);
       priv->start_time = g_get_monotonic_time ();
-      priv->x = event->touch.x;
-      priv->y = event->touch.y;
-      priv->root_x = event->touch.x_root;
-      priv->root_y = event->touch.y_root;
+      
+      /* GTK 4: Use accessor function to get touch coordinates */
+      gdk_event_get_position (event, &x, &y);
+      priv->x = x;
+      priv->y = y;
+      
+      /* GTK 4: Get surface coordinates - root coordinates are no longer available */
+      priv->root_x = x;
+      priv->root_y = y;
       priv->sequence = sequence;
 
+      /* GTK 4: gdk_threads_add_timeout is deprecated, use g_timeout_add */
       priv->timeout_id =
-        gdk_threads_add_timeout (priv->delay,
-                                 _sugar_long_press_controller_timeout,
-                                 controller);
+        g_timeout_add (priv->delay,
+                       _sugar_long_press_controller_timeout,
+                       controller);
       g_object_notify (G_OBJECT (controller), "state");
       break;
     case GDK_TOUCH_UPDATE:
-      if (ABS (priv->x - event->touch.x) > priv->threshold ||
-          ABS (priv->y - event->touch.y) > priv->threshold)
+      /* GTK 4: Use accessor function to get current touch coordinates */
+      gdk_event_get_position (event, &x, &y);
+      if (ABS (priv->x - x) > priv->threshold ||
+          ABS (priv->y - y) > priv->threshold)
         _sugar_long_press_controller_cancel (SUGAR_LONG_PRESS_CONTROLLER (controller));
       break;
     case GDK_TOUCH_END:

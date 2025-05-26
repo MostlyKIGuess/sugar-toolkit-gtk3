@@ -128,7 +128,8 @@ _sugar_swipe_controller_store_event (SugarSwipeController *controller,
 
   priv = controller->priv;
 
-  if (!gdk_event_get_coords (event, &x, &y))
+  /* GTK 4: Use gdk_event_get_position instead of gdk_event_get_coords */
+  if (!gdk_event_get_position (event, &x, &y))
     return;
 
   time = gdk_event_get_time (event);
@@ -262,9 +263,11 @@ sugar_swipe_controller_handle_event (SugarEventController *controller,
   GdkEventSequence *sequence;
   gboolean handled = TRUE;
   GdkDevice *device;
+  GdkEventType event_type;
 
   device = gdk_event_get_device (event);
   sequence = gdk_event_get_event_sequence (event);
+  event_type = gdk_event_get_event_type (event);
 
   if (!device || !sequence)
     return FALSE;
@@ -276,7 +279,7 @@ sugar_swipe_controller_handle_event (SugarEventController *controller,
       (priv->sequence && priv->sequence != sequence))
     return FALSE;
 
-  switch (event->type)
+  switch (event_type)
     {
     case GDK_TOUCH_BEGIN:
       priv->device = g_object_ref (device);

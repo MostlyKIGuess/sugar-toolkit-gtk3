@@ -170,8 +170,8 @@ import cairo
 import json
 
 import gi
-gi.require_version('Gtk', '3.0')
-gi.require_version('Gdk', '3.0')
+gi.require_version('Gtk', '4.0')
+gi.require_version('Gdk', '4.0')
 gi.require_version('TelepathyGLib', '0.12')
 gi.require_version('SugarExt', '1.0')
 

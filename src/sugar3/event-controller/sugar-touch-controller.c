@@ -24,6 +24,12 @@
 
 typedef struct _SugarTouch SugarTouch;
 
+/* GTK 4: GdkPoint was removed, define our own simple point structure */
+typedef struct {
+  gint x;
+  gint y;
+} SugarPoint;
+
 enum {
   PROP_MIN_TOUCHES = 1,
   PROP_MAX_TOUCHES
@@ -97,24 +103,29 @@ sugar_touch_controller_handle_event (SugarEventController *controller,
   SugarTouchControllerPrivate *priv;
   GdkEventSequence *sequence;
   gboolean handled = TRUE;
-  GdkPoint *point;
+  SugarPoint *point;
   gint n_touches, prev_n_touches;
   gboolean is_in_range, was_in_range;
+  GdkEventType event_type;
+  gdouble x, y;
 
   priv = SUGAR_TOUCH_CONTROLLER (controller)->priv;
   sequence = gdk_event_get_event_sequence (event);
+  event_type = gdk_event_get_event_type (event);
   prev_n_touches = g_hash_table_size (priv->touches);
   was_in_range = TOUCHES_IN_RANGE (prev_n_touches, priv);
 
   if (!sequence)
     return FALSE;
 
-  switch (event->type)
+  switch (event_type)
     {
     case GDK_TOUCH_BEGIN:
-      point = g_new0 (GdkPoint, 1);
-      point->x = event->touch.x;
-      point->y = event->touch.y;
+      point = g_new0 (SugarPoint, 1);
+      /* GTK 4: Use gdk_event_get_position instead of direct field access */
+      gdk_event_get_position (event, &x, &y);
+      point->x = x;
+      point->y = y;
       g_hash_table_insert (priv->touches, sequence, point);
       break;
     case GDK_TOUCH_END:
@@ -125,8 +136,10 @@ sugar_touch_controller_handle_event (SugarEventController *controller,
 
       if (point)
         {
-          point->x = event->touch.x;
-          point->y = event->touch.y;
+          /* GTK 4: Use gdk_event_get_position instead of direct field access */
+          gdk_event_get_position (event, &x, &y);
+          point->x = x;
+          point->y = y;
         }
       else
         handled = FALSE;
@@ -234,7 +247,7 @@ sugar_touch_controller_get_center (SugarTouchController *controller,
 {
   SugarTouchControllerPrivate *priv;
   GHashTableIter iter;
-  GdkPoint *point;
+  SugarPoint *point;
   gint x1, y1, x2, y2, dx, dy;
 
   g_return_val_if_fail (SUGAR_IS_TOUCH_CONTROLLER (controller), FALSE);
@@ -330,7 +343,7 @@ sugar_touch_controller_get_coords (SugarTouchController *controller,
                                    gint                 *y)
 {
   SugarTouchControllerPrivate *priv;
-  GdkPoint *point;
+  SugarPoint *point;
 
   g_return_val_if_fail (SUGAR_IS_TOUCH_CONTROLLER (controller), FALSE);
   g_return_val_if_fail (sequence != NULL, FALSE);
